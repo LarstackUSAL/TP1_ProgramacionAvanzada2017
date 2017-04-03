@@ -1,6 +1,6 @@
 package ar.edu.usal.programacion.tp1;
 
-public class Camiones {
+public final class Camiones {
 	
 	private String patente;
 	private int anioPatentamiento;

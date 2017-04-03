@@ -1,21 +1,23 @@
 package ar.edu.usal.programacion.tp1;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ViajesLarga extends Viajes {
 
 	private double distancia;
-	private Calendar fechaLlegada;
-	private String[] localidades;
+	private Calendar fechaLlegada = null;
+	private ArrayList<String> localidades;
 	
 	public ViajesLarga() {};
 
-	public ViajesLarga(double distancia, Calendar fechaLlegada, String[] localidades) {
+	public ViajesLarga(int nroViaje, Calendar fechaPartida, double peso,
+			Peones[] peones, boolean requiereCustodiaSatelital, double costo,
+			Camiones vehiculo, ArrayList<Peajes> peajes, double distancia, ArrayList localidades) {
 		
+		super(nroViaje, fechaPartida, peso, peones, requiereCustodiaSatelital, costo, vehiculo, peajes);
 		this.distancia = distancia;
-		this.fechaLlegada = fechaLlegada;
 		this.localidades = localidades;
-		
 	}
 
 	public double getDistancia() {
@@ -30,12 +32,6 @@ public class ViajesLarga extends Viajes {
 		
 	};
 
-	public String[] getLocalidades() {
-		
-		return localidades;
-		
-	};
-
 	public void setDistancia(double distancia) {
 		
 		this.distancia = distancia;
@@ -46,12 +42,26 @@ public class ViajesLarga extends Viajes {
 		
 		this.fechaLlegada = fechaLlegada;
 		
-	};
+	}
 
-	public void setLocalidades(String[] localidades) {
-		
+	public ArrayList<String> getLocalidades() {
+		return localidades;
+	}
+
+	public void setLocalidades(ArrayList<String> localidades) {
 		this.localidades = localidades;
+	}
+
+	@Override
+	public double calcularCostoTotal() {
 		
-	};
+		if(distancia > 1000){
+			
+			double kmExtras = distancia - 1000;
+			
+			return (costo + (costo * (((int)((distancia - 1000)/150))* 0.015)));
+		}
+		return costo;
+	}
 	
 }
