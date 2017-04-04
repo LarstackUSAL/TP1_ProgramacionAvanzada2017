@@ -475,7 +475,7 @@ public class ControladorEmpresaDistribucion {
 	public void mostrarViajesValorAlAzar(ArrayList<Viajes> viajesList) {
 
 		
-		
+		bla bla
 	}
 
 	public void mostrarCantidadViajesCortaDistancia() {
