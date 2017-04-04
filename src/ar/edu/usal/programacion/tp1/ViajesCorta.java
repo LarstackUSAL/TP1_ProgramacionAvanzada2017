@@ -30,7 +30,7 @@ public class ViajesCorta extends Viajes {
 		
 		if(esEfectivo){
 			
-			return costo - (costo * 0.05);
+			return costo - (costo * descuentoEfectivo);
 		}
 		return costo;
 	}

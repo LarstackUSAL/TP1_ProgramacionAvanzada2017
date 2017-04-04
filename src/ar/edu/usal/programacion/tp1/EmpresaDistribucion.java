@@ -32,10 +32,12 @@ public class EmpresaDistribucion {
 			System.out.println("2 - Cargar Viajes.");
 			System.out.println("3 - Modificar viaje.");
 			System.out.println("4 - Registrar llegada a destino.");
-//			System.out.println("5 - Mostrar viajes que superan valor al azar."); //Falta implementar metodo (LR)		
+			System.out.println("5 - Mostrar viajes que superan valor al azar.");		
 			System.out.println("6 - Mostrar cantidad de viajes Corta Distancia.");
-			
-			System.out.println("9 - Salir del sistema.");
+			System.out.println("7 - Valor total y cantidad Viajes ultimo bimestre - Cheque.");
+			System.out.println("8 - Mostrar Viajes que pasaron por una Localidad.");
+			System.out.println("9 - Mostrar Numeros de Patente No Asignados.");
+			System.out.println("10 - Salir del sistema.");
 
 			int opcion = 0;
 
@@ -58,13 +60,21 @@ public class EmpresaDistribucion {
 					ced.registrarLlegada(viajesList);
 					break;
 				case 5:
-					ced.mostrarViajesValorAlAzar(viajesList); //Falta implementarlo (LR)
+					ced.mostrarViajesValorAlAzar(viajesList);
 					break;
 				case 6:
 					ced.mostrarCantidadViajesCortaDistancia();
 					break;
-					
+				case 7:
+					ced.mostrarValorCantidadViajesBimestreCheque(viajesList);
+					break;
+				case 8:
+					ced.mostrarViajePasaronPorLocalidad(viajesList);
+					break;
 				case 9:
+					ced.mostrarNumerosPatenteNoAsignado(camiones, args);
+					break;
+				case 10:
 					System.out.println("SALISTE DEL SISTEMA.");
 					salirDelSistema = true;
 					break;

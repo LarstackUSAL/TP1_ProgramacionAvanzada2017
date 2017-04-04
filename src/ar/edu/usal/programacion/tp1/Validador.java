@@ -1,6 +1,8 @@
 package ar.edu.usal.programacion.tp1;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Validador {
@@ -384,4 +386,17 @@ public class Validador {
 		fechaLlegada.set(Calendar.MINUTE, minutos);
 	}
 	
+	public static int calcularDiasEntreFechas(Calendar fechaPartida, Calendar fechaLlegada){
+		
+		Date fechaP = fechaPartida.getTime();
+		Date fechaL = fechaLlegada.getTime();		
+		
+		return (int)( (fechaL.getTime() - fechaP.getTime()) / (1000 * 60 * 60 * 24));
+	}
+	
+	public static int generarEnteroRandom(int min, int max){
+		
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
 }

@@ -55,11 +55,11 @@ public class ViajesLarga extends Viajes {
 	@Override
 	public double calcularCostoTotal() {
 		
-		if(distancia > 1000){
+		if(distancia > distanciaMax){
 			
-			double kmExtras = distancia - 1000;
+			double kmExtras = distancia - distanciaMax;
 			
-			return (costo + (costo * (((int)((distancia - 1000)/150))* 0.015)));
+			return (costo + (costo * (((int)((distancia - distanciaMax)/incrementoCadaKm))* incrementoSuperaKm)));
 		}
 		return costo;
 	}

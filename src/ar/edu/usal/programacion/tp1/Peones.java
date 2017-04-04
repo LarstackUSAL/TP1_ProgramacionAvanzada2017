@@ -5,6 +5,7 @@ public class Peones {
 	private String nombre;
 	private String cuil;
 	private double costo;
+	private double totalCobrado; 
 	
 	public Peones() {};
 	
@@ -46,6 +47,14 @@ public class Peones {
 
 	public void setCuil(String cuil) {
 		this.cuil = cuil;
+	}
+
+	public double getTotalCobrado() {
+		return totalCobrado;
+	}
+
+	public void setTotalCobrado(double totalCobrado) {
+		this.totalCobrado = totalCobrado;
 	};
 
 }

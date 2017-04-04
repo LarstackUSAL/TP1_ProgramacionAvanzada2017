@@ -30,8 +30,6 @@ public abstract class Viajes implements ICostoViaje{
 		this.peajes = peajes;
 	}
 	
-//	public abstract double calcularCostoTotal();
-	
 	public int getNroViaje() {
 		
 		return nroViaje;
