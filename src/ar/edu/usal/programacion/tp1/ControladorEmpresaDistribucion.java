@@ -72,6 +72,8 @@ public class ControladorEmpresaDistribucion {
 
 				double peso = Validador.insertDouble("Insertar el peso transportado(Kg): ", true);
 
+				System.out.println();
+				System.out.println("CONTRATAR PEONES: ");
 				Peones[] peonesViaje = new Peones[EmpresaDistribucion.MAX_PEONES];				
 				boolean ingresarPeones = Validador.insertBooleanSyN("Se quieren contratar peones? (s/n): ");
 				if(ingresarPeones){
@@ -79,34 +81,53 @@ public class ControladorEmpresaDistribucion {
 					boolean otroPeon;
 
 					do{
-						otroPeon = false;
-						for (int i = 0; i < peones.length; i++) {
-							System.out.println((i+1) + " - " + peones[i].getNombre() + " - " + peones[i].getCuil());
-						}
-						System.out.println();
-						boolean peonOk;
-						do{
-							peonOk = false;
-							String cuilPeon = Validador.insertString("Insertar CUIL del Peon a contratar: ");
+						if(Validador.hayEspacioDisponible(peonesViaje)){
+							otroPeon = false;
+							boolean yaContratado;
 
 							for (int i = 0; i < peones.length; i++) {
-
-								if(cuilPeon.trim().equals(peones[i].getCuil().trim())){
-
-									Validador.insertarEnArray(peonesViaje, peones[i]);
-									System.out.println("SE HA CONTRATADO EL PEON CORRECTAMENTE.");
-									peonOk = true;
-									break;
-								}
+								System.out.println((i+1) + " - " + peones[i].getNombre() + " - " + peones[i].getCuil());
 							}
+							System.out.println();
+							boolean peonOk;
+							do{
+								peonOk = false;
+								yaContratado = false;
+								String cuilPeon = Validador.insertString("Insertar CUIL del Peon a contratar: ");
 
-							if(!peonOk) System.out.println("CUIL NO EXISTENTE.");
+								for (int i = 0; i < peones.length; i++) {
 
-						}while(!peonOk);
+									if(cuilPeon.trim().equals(peones[i].getCuil().trim())){
+										peonOk = true;										
 
-						System.out.println();
-						otroPeon = Validador.insertBooleanSyN("Contratar otro peon? (s/n): ");
+										for (int j = 0; j < peonesViaje.length; j++) {
 
+											if(peonesViaje[j]!= null && ((peonesViaje[j].getCuil()).equals(cuilPeon))){
+												yaContratado = true;
+												break;
+											}
+										}
+
+										if(!yaContratado){
+											Validador.insertarEnArray(peonesViaje, peones[i]);
+											System.out.println("SE HA CONTRATADO EL PEON CORRECTAMENTE.");
+											peonOk = true;
+										}
+										break;
+
+									}
+								}
+
+								if(!peonOk) System.out.println("CUIL NO EXISTENTE.");
+								else if(yaContratado) System.out.println("PEON YA CONTRATADO. ELEGIR OTRO.");
+							}while(!peonOk || yaContratado);
+
+							System.out.println();
+							otroPeon = Validador.insertBooleanSyN("Contratar otro peon? (s/n): ");
+						}else{
+							System.out.println("NO SE PUEDEN ASIGNAR MAS PEONES A ESTE VIAJE.");
+							otroPeon = false;
+						}
 					}while(otroPeon);
 				}
 
@@ -114,116 +135,132 @@ public class ControladorEmpresaDistribucion {
 
 				double costo = Validador.insertDouble("Ingresar costo basico del viaje: ", true);
 
+				System.out.println();
+				System.out.println("CAMIONES:");
+				boolean hayCamionesDisponibles = false;
 				for (int i = 0; i < camiones.length; i++) {
 
 					if(camiones[i]!=null){
 
-						System.out.println((i+1) + " - " + camiones[i].getPatente() + " - " + camiones[i].getCapacidad() 
+						System.out.println("PATENTE: " + camiones[i].getPatente() + " - " + camiones[i].getCapacidad() 
 								+ "Kg - " + (camiones[i].isDisponible() ? "DISPONIBLE" : "EN VIAJE/NO DISPONIBLE"));
+
+						if(camiones[i].isDisponible()) hayCamionesDisponibles = true;
 					}
 				}
+				if(hayCamionesDisponibles){
+					Camiones camionViaje = new Camiones();
+					boolean patenteOk;
+					boolean disponibleOk;
+					boolean capacidadOk;
+					boolean reintentar;
 
-				Camiones camionViaje = new Camiones();
-				boolean patenteOk;
-				boolean disponibleOk;
-				boolean capacidadOk;
+					do{
+						reintentar = true;
+						patenteOk = false;
+						disponibleOk = false;
+						capacidadOk = false;
 
-				do{
+						String patenteCamion = Validador.insertString("Ingresar Patente Camion: ");
 
-					patenteOk = false;
-					disponibleOk = false;
-					capacidadOk = false;
+						for (int i = 0; i < camiones.length; i++) {
 
-					String patenteCamion = Validador.insertString("Ingresar Patente Camion: ");
+							if(camiones[i]!=null){
 
-					for (int i = 0; i < camiones.length; i++) {
+								if(camiones[i].getPatente().trim().equals(patenteCamion)){
 
-						if(camiones[i]!=null){
+									patenteOk = true;
 
-							if(camiones[i].getPatente().trim().equals(patenteCamion)){
+									if(camiones[i].isDisponible()){
 
-								patenteOk = true;
+										disponibleOk = true;
 
-								if(camiones[i].isDisponible()){
-
-									disponibleOk = true;
-
-									if(peso <= camiones[i].getCapacidad()){
-										capacidadOk = true;
-										camiones[i].setDisponible(false);
-										camionViaje = camiones[i];
+										if(peso <= camiones[i].getCapacidad()){
+											capacidadOk = true;
+											camiones[i].setDisponible(false);
+											camionViaje = camiones[i];
+											System.out.println("CAMION SELECCIONADO.");
+										}
 									}
-								}
 
-								break;
+									break;
+								}
 							}
 						}
+
+						if(!patenteOk) System.out.println("PATENTE NO EXISTENTE.");
+						else if(!disponibleOk) System.out.println("CAMION NO DISPONIBLE.");
+						else if(!capacidadOk){ 
+							System.out.println("EL PESO SUPERA LA CAPACIDAD DEL CAMION.");						
+							reintentar = Validador.insertBooleanSyN("Quiere probar con otro vehiculo? (s/n): ");
+						}
+					}while((!patenteOk || !disponibleOk || !capacidadOk) && reintentar);
+
+					if(reintentar){
+						boolean ingresarPeajes = Validador.insertBooleanSyN("Se quiere ingresar Peajes? (s/n): ");
+						ArrayList<Peajes> peajesList = new ArrayList<Peajes>();
+
+						if(ingresarPeajes){
+
+							boolean otroPeaje;
+							do{
+								otroPeaje = false;
+								peajesList.add(new Peajes(Validador.insertString("Ingresar localidad: "), 
+										Validador.insertDouble("Ingresar importe peaje: ", true)));
+
+								otroPeaje = Validador.insertBooleanSyN("Agregar otro peaje? (s/n): ");
+
+							}while(otroPeaje);
+						}
+
+						Viajes viaje;
+
+
+						if(esLargaDistancia){
+
+							double distancia = Validador.insertDouble("Ingresar distancia a recorrer: ", true);
+
+							ArrayList<String> localidades = new ArrayList<>();
+
+							boolean otraLocalidad;					
+							do{
+								otraLocalidad = false;
+
+								localidades.add(Validador.insertString("Ingresar Localidad visitada: "));
+
+								otraLocalidad = Validador.insertBooleanSyN("Se quiere ingresar otra localidad? (s/n): ");
+
+							}while(otraLocalidad);
+
+							viaje = new ViajesLarga(EmpresaDistribucion.getNextIdViaje(), fechaPartida, peso, peonesViaje, 
+									custodiaSatelital, costo, camionViaje, peajesList, distancia, localidades);
+
+						}else{
+
+							boolean esEfectivo = Validador.insertBooleanSyN("Se abonarà en efectivo? (s/n): ");
+
+							viaje = new ViajesCorta(EmpresaDistribucion.getNextIdViaje(), fechaPartida, peso, peonesViaje, 
+									custodiaSatelital, costo, camionViaje, peajesList, esEfectivo);
+
+							EmpresaDistribucion.incrementarCantidadViajesCortaDistancia();
+						}
+
+						System.out.println("Costo Total: " + viaje.calcularCostoTotal());
+
+						viajesList.add(viaje);
 					}
-
-					if(!patenteOk) System.out.println("PATENTE NO EXISTENTE.");
-					else if(!disponibleOk) System.out.println("CAMION NO DISPONIBLE.");
-					else if(!capacidadOk) System.out.println("EL PESO SUPERA LA CAPACIDAD DEL CAMION.");
-				}while(!patenteOk || !disponibleOk || !capacidadOk);
-
-				System.out.println();
-				boolean ingresarPeajes = Validador.insertBooleanSyN("Se quiere ingresar Peajes? (s/n): ");
-				ArrayList<Peajes> peajesList = new ArrayList<Peajes>();
-
-				if(ingresarPeajes){
-
-					boolean otroPeaje;
-					do{
-						otroPeaje = false;
-						peajesList.add(new Peajes(Validador.insertString("Ingresar localidad: "), 
-								Validador.insertDouble("Ingresar importe peaje: ", true)));
-
-						otroPeaje = Validador.insertBooleanSyN("Agregar otro peaje? (s/n): ");
-
-					}while(otroPeaje);
-				}
-
-				Viajes viaje;
-
-
-				if(esLargaDistancia){
-
-					double distancia = Validador.insertDouble("Ingresar distancia a recorrer: ", true);
-
-					ArrayList<String> localidades = new ArrayList<>();
-
-					boolean otraLocalidad;					
-					do{
-						otraLocalidad = false;
-
-						localidades.add(Validador.insertString("Ingresar Localidad visitada: "));
-
-						otraLocalidad = Validador.insertBooleanSyN("Se quiere ingresar otra localidad? (s/n): ");
-
-					}while(otraLocalidad);
-
-					viaje = new ViajesLarga(EmpresaDistribucion.getNextIdViaje(), fechaPartida, peso, peonesViaje, 
-							custodiaSatelital, costo, camionViaje, peajesList, distancia, localidades);
-
+					System.out.println();
+					cargarOtro = Validador.insertBooleanSyN("Cargar otro viaje? (s/n): ");
 				}else{
 
-					boolean esEfectivo = Validador.insertBooleanSyN("Se abonarà en efectivo? (s/n): ");
-
-					viaje = new ViajesCorta(EmpresaDistribucion.getNextIdViaje(), fechaPartida, peso, peonesViaje, 
-							custodiaSatelital, costo, camionViaje, peajesList, esEfectivo);
-
-					EmpresaDistribucion.incrementarCantidadViajesCortaDistancia();
+					System.out.println("TODOS LOS CAMIONES ESTAN EN VIAJE/NO DISPONIBLES PARA SER ASIGNADOS.");
+					System.out.println();
+					cargarOtro = false;
 				}
-
-				System.out.println("Costo Total: " + viaje.calcularCostoTotal());
-
-				viajesList.add(viaje);
-
-				System.out.println();
-				cargarOtro = Validador.insertBooleanSyN("Cargar otro viaje? (s/n): ");
-
 			}else{
 				System.out.println("NO SE HAN CARGADO DATOS DE CAMIONES.");
 			}
+
 		}while(cargarOtro);		
 	}
 
@@ -233,7 +270,7 @@ public class ControladorEmpresaDistribucion {
 		boolean hayViajes = false;
 
 		for (int i = 0; i < viajesList.size(); i++) {
-			System.out.println(viajesList.get(i).getNroViaje());
+			System.out.println("Numero viaje: " + viajesList.get(i).getNroViaje());
 			hayViajes = true;
 		}
 		System.out.println();
@@ -263,7 +300,7 @@ public class ControladorEmpresaDistribucion {
 
 			if(modificarCamion){
 
-				System.out.println("Patente Vehiculo del viaje: " + viajeParaModificar.getVehiculo().getPatente());
+				System.out.println("Patente Vehiculo actual del viaje: " + viajeParaModificar.getVehiculo().getPatente());
 				System.out.println();
 
 				boolean hayCamionesDisponibles = false;
@@ -283,9 +320,9 @@ public class ControladorEmpresaDistribucion {
 					boolean patenteOk;
 					boolean disponibleOk;
 					boolean capacidadOk;
-
+					boolean reintentar;
 					do{
-
+						reintentar = true;
 						patenteOk = false;
 						disponibleOk = false;
 						capacidadOk = false;
@@ -308,6 +345,7 @@ public class ControladorEmpresaDistribucion {
 											capacidadOk = true;
 											camiones[i].setDisponible(false);
 											camionViaje = camiones[i];
+											System.out.println("CAMION SELECCIONADO.");
 										}
 									}
 
@@ -318,13 +356,18 @@ public class ControladorEmpresaDistribucion {
 
 						if(!patenteOk) System.out.println("PATENTE NO EXISTENTE.");
 						else if(!disponibleOk) System.out.println("CAMION NO DISPONIBLE.");
-						else if(!capacidadOk) System.out.println("EL PESO SUPERA LA CAPACIDAD DEL CAMION.");
-					}while(!patenteOk || !disponibleOk || !capacidadOk);
-
-					viajeParaModificar.setVehiculo(camionViaje);
+						else if(!capacidadOk){
+							System.out.println("EL PESO SUPERA LA CAPACIDAD DEL CAMION.");
+							reintentar = Validador.insertBooleanSyN("Quiere probar con otro vehiculo? (s/n): ");
+						}
+					}while((!patenteOk || !disponibleOk || !capacidadOk) && reintentar);
+					if(reintentar){
+						viajeParaModificar.setVehiculo(camionViaje);
+					}
 				}else{
 
 					System.out.println("TODOS LOS CAMIONES ESTAN EN VIAJE/NO DISPONIBLES PARA SER ASIGNADOS.");
+					System.out.println();
 				}
 			}
 
@@ -342,41 +385,53 @@ public class ControladorEmpresaDistribucion {
 					}
 				}
 				if(!hayPeonesAsignados) System.out.println("No hay peones asignados a este viaje.");
-				System.out.println();
+				else{
+					System.out.println();
 
-				boolean eliminarPeones = Validador.insertBooleanSyN("Se quiere remover algun peon asignado? (s/n): ");
-				if(eliminarPeones){
+					boolean eliminarPeones = Validador.insertBooleanSyN("Se quiere remover algun peon asignado? (s/n): ");
+					if(eliminarPeones){
 
-					boolean otroPeon;					
-					do{
-
-						boolean peonOk;
+						boolean otroPeon = false;					
 						do{
-							peonOk = false;
-							String cuilPeon = Validador.insertString("Insertar CUIL del Peon a remover: ");
-
 							for (int i = 0; i < viajeParaModificar.getPeones().length; i++) {
-
-								if(viajeParaModificar.getPeones()[i]!=null && (cuilPeon.trim().equals(viajeParaModificar.getPeones()[i].getCuil().trim()))){
-
-									viajeParaModificar.getPeones()[i] = null;
-									System.out.println("SE HA REMOVIDO EL PEON CORRECTAMENTE.");
-									peonOk = true;
-									break;
+								if(viajeParaModificar.getPeones()[i]!=null){
+									System.out.println((i+1) + " - " + viajeParaModificar.getPeones()[i].getNombre() + " - " + viajeParaModificar.getPeones()[i].getCuil());
 								}
 							}
+							boolean reintentar;
+							boolean peonOk;
+							do{
+								reintentar = true;
+								peonOk = false;
+								String cuilPeon = Validador.insertString("Insertar CUIL del Peon a remover: ");
 
-							if(!peonOk) System.out.println("CUIL NO EXISTENTE.");
+								for (int i = 0; i < viajeParaModificar.getPeones().length; i++) {
 
-						}while(!peonOk);
+									if(viajeParaModificar.getPeones()[i]!=null && (cuilPeon.trim().equals(viajeParaModificar.getPeones()[i].getCuil().trim()))){
 
-						System.out.println();
-						otroPeon = Validador.insertBooleanSyN("Remover otro peon? (s/n): ");
+										viajeParaModificar.getPeones()[i] = null;
+										System.out.println("SE HA REMOVIDO EL PEON CORRECTAMENTE.");
+										peonOk = true;
+										break;
+									}
+								}
 
-					}while(otroPeon);
+								if(!peonOk){
+									System.out.println("CUIL NO EXISTENTE.");
+									reintentar = Validador.insertBooleanSyN("Quiere probar con otro CUIL? (s/n): ");
+									if(!reintentar) otroPeon = false;
+								}
+
+							}while(!peonOk && reintentar);
+							if(reintentar){
+								System.out.println();
+								otroPeon = Validador.insertBooleanSyN("Remover otro peon? (s/n): ");
+							}
+
+						}while(otroPeon);
+					}
 				}
-
-				boolean agregarPeones = Validador.insertBooleanSyN("Se quiere un nuevo peon? (s/n): ");
+				boolean agregarPeones = Validador.insertBooleanSyN("Se quiere contratar un nuevo peon? (s/n): ");
 
 				if(agregarPeones){
 
@@ -392,29 +447,44 @@ public class ControladorEmpresaDistribucion {
 						if(Validador.hayEspacioDisponible(viajeParaModificar.getPeones())){
 							otroPeon = false;
 							boolean peonOk;
+							boolean yaContratado;
 							do{
 								peonOk = false;
+								yaContratado = false;
 								String cuilPeon = Validador.insertString("Insertar CUIL del Peon a contratar: ");
 
 								for (int i = 0; i < peones.length; i++) {
 
 									if(cuilPeon.trim().equals(peones[i].getCuil().trim())){
+										peonOk = true;										
 
-										Validador.insertarEnArray(viajeParaModificar.getPeones(), peones[i]);
-										System.out.println("SE HA CONTRATADO EL PEON CORRECTAMENTE.");
-										peonOk = true;
+										for (int j = 0; j < viajeParaModificar.getPeones().length; j++) {
+
+											if(viajeParaModificar.getPeones()[j]!= null && ((viajeParaModificar.getPeones()[j].getCuil()).equals(cuilPeon))){
+												yaContratado = true;
+												break;
+											}
+										}
+
+										if(!yaContratado){
+											Validador.insertarEnArray(viajeParaModificar.getPeones(), peones[i]);
+											System.out.println("SE HA CONTRATADO EL PEON CORRECTAMENTE.");
+											peonOk = true;
+										}
 										break;
 									}
 								}
 
 								if(!peonOk) System.out.println("CUIL NO EXISTENTE.");
+								else if(yaContratado) System.out.println("PEON YA CONTRATADO. ELEGIR OTRO.");
 
-							}while(!peonOk);
+							}while(!peonOk || yaContratado);
 
 							System.out.println();
 							otroPeon = Validador.insertBooleanSyN("Contratar otro peon? (s/n): ");
 						}else{
 							System.out.println("NO SE PUEDEN ASIGNAR MAS PEONES A ESTE VIAJE.");
+							otroPeon = false;
 						}
 					}while(otroPeon);
 				}
@@ -431,7 +501,7 @@ public class ControladorEmpresaDistribucion {
 		boolean hayViajes = false;
 
 		for (int i = 0; i < viajesList.size(); i++) {
-			System.out.println(viajesList.get(i).getNroViaje() + " - " + ((viajesList.get(i) instanceof ViajesLarga) ? "LARGA DISTANCIA" : "CORTA DISTANCIA"));
+			System.out.println("NUMERO VIAJE: " + viajesList.get(i).getNroViaje() + " - " + ((viajesList.get(i) instanceof ViajesLarga) ? "LARGA DISTANCIA" : "CORTA DISTANCIA"));
 			if(viajesList.get(i) instanceof ViajesLarga) hayViajes = true;
 		}
 		System.out.println();
@@ -482,6 +552,7 @@ public class ControladorEmpresaDistribucion {
 		System.out.println("VALOR GENERADO: " + valorRandom);
 
 		boolean esPrimerResultado = true;
+		boolean viajesSuperan = false;
 		int cantidadViajesLargaDistanciaPendientes = 0;
 
 		for (int i = 0; i < viajesList.size(); i++) {
@@ -501,19 +572,19 @@ public class ControladorEmpresaDistribucion {
 					costoFinal = calcularCostoFinal(viaje);					
 					if(costoFinal>valorRandom) supera= true;
 				}else{
-
+					viajesSuperan = true;
 					cantidadViajesLargaDistanciaPendientes++;
 				}
 			}
 			if(supera && esPrimerResultado){
 
-				System.out.println("NUMERO\t\t| FECHA SALIDA\t| PATENTE\t| KILOS\t|\t COSTO TOTAL");
-				System.out.println("----------------|---------------|------------------|----------------|---------------");					
+				System.out.println("NUMERO\t\t| FECHA SALIDA\t| PATENTE\t| KILOS\t\t| COSTO TOTAL");
+				System.out.println("----------------|---------------|---------------|---------------|---------------");					
 				esPrimerResultado = false;
 			}
 			if(supera){
-
-				System.out.println(viaje.getNroViaje()+"\t|\t "+viaje.getFechaPartida()+"\t|\t "+viaje.getVehiculo().getPatente()
+				viajesSuperan = true;
+				System.out.println(viaje.getNroViaje()+"\t\t| "+Validador.darFormatoFechaCalendar(viaje.getFechaPartida())+"\t|\t "+viaje.getVehiculo().getPatente()
 						+"\t|\t "+viaje.getPeso()+"\t|\t "+viaje.calcularCostoTotal());
 				System.out.println("\t\t|\t\t|\t\t|\t\t|\t\t");
 			}
@@ -524,6 +595,8 @@ public class ControladorEmpresaDistribucion {
 			System.out.println("Se individuaron "+ cantidadViajesLargaDistanciaPendientes + 
 					" sin fecha de llegada, por lo tanto no es posible calcular su costo total final.");			
 		}
+
+		if(!viajesSuperan) System.out.println("NO SE ENCONTRARON VIAJES QUE SUPERAN EL VALOR " + valorRandom);
 	}
 
 	public void mostrarCantidadViajesCortaDistancia() {
@@ -542,8 +615,9 @@ public class ControladorEmpresaDistribucion {
 		}
 
 		for(int i=0; i<viaje.getPeones().length; i++){
-
-			costoFinal = costoFinal + (viaje.getPeones()[i].getCosto()*diasViaje); 
+			if(viaje.getPeones()[i] != null){
+				costoFinal = costoFinal + (viaje.getPeones()[i].getCosto()*diasViaje);
+			}
 		}
 
 		for (int i = 0; i < viaje.getPeajes().size(); i++) {
@@ -591,6 +665,7 @@ public class ControladorEmpresaDistribucion {
 		System.out.println();
 		String letrasInput = Validador.insertString("Ingresar 3 letras: ");
 
+		boolean localidadEncontrada = false;
 		for (int i = 0; i < viajesList.size(); i++){
 
 			Viajes viaje = viajesList.get(i);
@@ -604,7 +679,7 @@ public class ControladorEmpresaDistribucion {
 					if(letrasInput.charAt(0) == localidad.charAt(0) 
 							&& letrasInput.charAt(1) == localidad.charAt(1) 
 							&& letrasInput.charAt(2) == localidad.charAt(2)){
-
+						localidadEncontrada = true;
 						localidadOk = true;
 					}
 				}
@@ -625,39 +700,43 @@ public class ControladorEmpresaDistribucion {
 
 					for (int j = 0; j < viaje.getPeones().length; j++){
 
-						Peones peon = viaje.getPeones()[j];
+						if(viaje.getPeones()[j] != null){
 
-						System.out.println("PEON " +  (j+1) + ": ");
-						System.out.println("Nombre: " +  peon.getNombre());
-						System.out.println("Costo: " + peon.getCosto());
+							Peones peon = viaje.getPeones()[j];
+
+							System.out.println("PEON " +  (j+1) + ": ");
+							System.out.println("Nombre: " +  peon.getNombre());
+							System.out.println("Costo: " + peon.getCosto());
+						}
 					}
 				}
-			}
+			}else System.out.println("NO HAY VIAJES DE LARGA DISTANCIA INGRESADOS.");
 		}
 
+		if(!localidadEncontrada) System.out.println("NINGUN RESULTADO PARA EL FILTRO INGRESADO.");
 	}
 
 	public void mostrarNumerosPatenteNoAsignado(Camiones[] camiones, String[] args) {
 
 		if(args.length>0){
-			
+
 			boolean noExisteEnLaBase = false;
 			boolean mostroCamion = false;
-			
+
 			for (int i = 0; i < args.length; i++) {
-				
+
 				String numeroPatente = args[i];
 				boolean existeCamion = false;
-				
+
 				for (int j = 0; j < camiones.length; j++) {
-					
+
 					Camiones camion = camiones[j];
-					
-					if(camion.getPatente().trim().equals(numeroPatente.trim())){
-						
+
+					if(camion != null && camion.getPatente().trim().equals(numeroPatente.trim())){
+
 						existeCamion = true;
 						if(camion.isDisponible()){
-							System.out.println(numeroPatente);
+							System.out.println("NUMERO PATENTE NO ASIGNADO: " + numeroPatente);
 							mostroCamion = true;
 						}
 						break;
@@ -668,10 +747,91 @@ public class ControladorEmpresaDistribucion {
 					noExisteEnLaBase = true;
 				}
 			}
-			
+
 			if(!noExisteEnLaBase && !mostroCamion) System.out.println("TODOS LOS VEHICULOS FUERON ASIGNADOS.");
 		}else{
 			System.out.println("NO HAY PARAMETROS INGRESADOS COMO ARGUMENTO.");
+		}
+	}
+
+	public void mostrarViajesDeCadaPeon(Peones[] peones, ArrayList<Viajes> viajesList) {
+
+
+		for (int i = 0; i < peones.length; i++) {
+			System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+			Peones peon = peones[i];
+			String cuil = peon.getCuil().trim();
+			double valorTotalcobradoPeon = 0.0;
+			int cantidadViajesPeon = 0;
+			int cantidadViajesLargosSinFecha = 0;
+
+			System.out.println();
+			System.out.println("Nombre Peon: " + peon.getNombre());
+
+			for (int j = 0; j < viajesList.size(); j++) {
+
+				Viajes viaje = viajesList.get(j);
+
+				if(viaje.isRequiereCustodiaSatelital() && viaje.getPeso() > 850){
+
+					int anioCorriente = Calendar.getInstance().get(Calendar.YEAR);
+					int anioViaje = viaje.getFechaPartida().get(Calendar.YEAR);
+
+					if(anioCorriente == anioViaje){
+
+						Peones[] peonesViaje = viaje.getPeones();
+
+						for (int k = 0; k < peonesViaje.length; k++) {
+
+							Peones peonViaje = peonesViaje[k];
+							if(peonViaje != null){					
+
+								if(peonViaje.getCuil().trim().equals(cuil)){
+									
+									cantidadViajesPeon++;
+									System.out.println();
+									System.out.println("Numero Viaje: " + viaje.getNroViaje());
+
+									System.out.println("Fecha Salida: " + Validador.darFormatoFechaCalendar(viaje.getFechaPartida()));
+
+									int diasViaje = 1;
+									
+									if(viaje instanceof ViajesCorta){
+
+										String formaPago = ((ViajesCorta) viaje).isEsEfectivo() ? "EFECTIVO" : "CHEQUE";
+										System.out.println("Forma de pago: " + formaPago);
+									}else{
+
+										System.out.println("Localidades visitadas: ");
+
+										for (int l = 0; l < ((ViajesLarga) viaje).getLocalidades().size(); l++) {
+
+											String loc = ((ViajesLarga) viaje).getLocalidades().get(l);
+											System.out.println(loc);
+										}
+
+										if(((ViajesLarga) viaje).getFechaLlegada() != null) diasViaje = Validador.calcularDiasEntreFechas(viaje.getFechaPartida(), ((ViajesLarga) viaje).getFechaLlegada());
+										else cantidadViajesLargosSinFecha++;
+										
+									}
+
+									valorTotalcobradoPeon += (peon.getCosto()*diasViaje); 
+								}
+							}
+						}
+					}
+				}
+			}
+			System.out.println();
+			System.out.println("Valor Total cobrado por el peon: " + valorTotalcobradoPeon);
+			System.out.println("Cantidad de viajes realizados por el peon: " + cantidadViajesPeon);
+			
+			if(cantidadViajesLargosSinFecha>0){
+				System.out.println();
+				System.out.println("*Se individuaron "+cantidadViajesLargosSinFecha + " viaje/s largos sin Fecha Llegada,");
+				System.out.println("por lo tanto, no siendo posible calcular el valor total final,");
+				System.out.println("para estos viajes se calculò el total como viajes de 1 dia.");
+			}
 		}
 	}
 }

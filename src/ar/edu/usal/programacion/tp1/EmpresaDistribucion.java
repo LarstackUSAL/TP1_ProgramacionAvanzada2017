@@ -7,20 +7,20 @@ public class EmpresaDistribucion {
 
 	public static final int MAX_PEONES = 5;
 	public static final int MAX_CAMIONES = 10;
-	
+
 	private static int nextIdViaje = 1;
 	private static int cantidadViajesCortaDistancia = 0;
-	
+
 	public static void main(String[] args) {
-		
+
 		ControladorEmpresaDistribucion ced = new ControladorEmpresaDistribucion();
-		
+
 		Camiones[] camiones = new Camiones[MAX_CAMIONES];
 		Peones[] peones = new Peones[MAX_PEONES];
 		ced.loadDatosPeones(peones);
-		
+
 		ArrayList<Viajes> viajesList = new ArrayList();
-		
+
 		Scanner s = new Scanner(System.in);
 		boolean salirDelSistema = false;
 
@@ -37,7 +37,8 @@ public class EmpresaDistribucion {
 			System.out.println("7 - Valor total y cantidad Viajes ultimo bimestre - Cheque.");
 			System.out.println("8 - Mostrar Viajes que pasaron por una Localidad.");
 			System.out.println("9 - Mostrar Numeros de Patente No Asignados.");
-			System.out.println("10 - Salir del sistema.");
+			System.out.println("10 - Mostrar Viajes de cada Peon.");
+			System.out.println("0 - Salir del sistema.");
 
 			int opcion = 0;
 
@@ -75,6 +76,9 @@ public class EmpresaDistribucion {
 					ced.mostrarNumerosPatenteNoAsignado(camiones, args);
 					break;
 				case 10:
+					ced.mostrarViajesDeCadaPeon(peones, viajesList);
+					break;
+				case 0:
 					System.out.println("SALISTE DEL SISTEMA.");
 					salirDelSistema = true;
 					break;
@@ -97,10 +101,10 @@ public class EmpresaDistribucion {
 	}
 
 	public static int getNextIdViaje() {
-		
+
 		int idReturn = nextIdViaje;
 		nextIdViaje++;
-		
+
 		return idReturn;
 	}
 
@@ -111,5 +115,5 @@ public class EmpresaDistribucion {
 	public static void incrementarCantidadViajesCortaDistancia() {
 		cantidadViajesCortaDistancia++;
 	}
-	
+
 }

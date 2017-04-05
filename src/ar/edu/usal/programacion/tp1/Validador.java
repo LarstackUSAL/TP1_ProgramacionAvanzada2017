@@ -1,5 +1,7 @@
 package ar.edu.usal.programacion.tp1;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -19,7 +21,7 @@ public class Validador {
 		}
 		return false;
 	}
-	
+
 	public static void insertarEnArray(Object[] arr, Object obj){
 
 		// Busco la primera posición vacía donde setear el nuevo vehiculo
@@ -35,7 +37,7 @@ public class Validador {
 	}
 
 	public static boolean arrayVacio(Object[] arrayAnalizado) {
-		
+
 		int indiceNull = 0;
 		while(indiceNull<arrayAnalizado.length){
 			if(!(arrayAnalizado[indiceNull]==null)){
@@ -46,16 +48,16 @@ public class Validador {
 			}
 		}
 		return true;
-		
+
 	}
-	
+
 	public static boolean insertBooleanSyN(String mensaje){
-		
+
 		Scanner s = new Scanner(System.in);
 		boolean datosOK = false;
 		String sYn = ""; 
 		boolean booleanValidado = false;
-		
+
 		do {
 
 			datosOK = true;
@@ -82,46 +84,46 @@ public class Validador {
 			}
 
 		} while(!datosOK);
-		
+
 		return booleanValidado;
 	}
-	
+
 	public static String insertString(String mensaje){
 
 		Scanner s = new Scanner(System.in);
 		boolean datosOK = false;
 		String stringValidada = "";
-		
-			do {
 
-				datosOK = true;
-				System.out.println();
-				System.out.println(mensaje);
+		do {
 
-				if(s.hasNextLine()) {
+			datosOK = true;
+			System.out.println();
+			System.out.println(mensaje);
 
-					stringValidada = s.nextLine();
+			if(s.hasNextLine()) {
 
-					if(stringValidada.isEmpty())
-						datosOK = false;
-				}
+				stringValidada = s.nextLine();
 
-				if(!datosOK) {
+				if(stringValidada.isEmpty())
+					datosOK = false;
+			}
 
-					System.out.println("VALOR INGRESADO NO VALIDO.");
-				}
+			if(!datosOK) {
 
-			} while(!datosOK);
+				System.out.println("VALOR INGRESADO NO VALIDO.");
+			}
 
-			return stringValidada;
+		} while(!datosOK);
+
+		return stringValidada;
 	}
 
 	public static double insertDouble(String mensaje, boolean mayorCero){
-		
+
 		double doubleValidado = 0.0;
 		boolean datosOk = false;
 		Scanner s = new Scanner(System.in);
-		
+
 		do {
 
 			datosOk = true;
@@ -130,7 +132,7 @@ public class Validador {
 			if(s.hasNextDouble()) {
 
 				doubleValidado = s.nextDouble();
-				
+
 				if(mayorCero && doubleValidado <= 0.0){ 
 					datosOk = false;
 					System.out.println("EL VALOR DEBE SER MAYOR A 0.");
@@ -143,10 +145,10 @@ public class Validador {
 			}
 
 		} while(!datosOk);
-		
+
 		return doubleValidado;
 	}
-	
+
 	public static int insertAnio(String mensaje, String mensajeError, int antiguedadMax) {
 
 		Scanner s = new Scanner(System.in);
@@ -185,12 +187,12 @@ public class Validador {
 				System.out.println(mensajeError);
 
 		} while(!fechaOK);
-		
+
 		return anioValidado;
 	}
 
 	public static Calendar insertFecha(String mensaje) {
-		
+
 		Scanner s = new Scanner(System.in);
 		boolean datosOK = false;						
 		Calendar fechaValidada = Calendar.getInstance();
@@ -297,7 +299,7 @@ public class Validador {
 
 		fechaValidada.set(anio, mes, dia);
 		s.nextLine();
-		
+
 		return fechaValidada;
 	}
 
@@ -316,9 +318,9 @@ public class Validador {
 				intValidado = s.nextInt();
 
 				if((intValidado>=0) || menorCeroTambien) {
-					
+
 					if((limiteInferior != null) && (intValidado >= limiteInferior)){
-						
+
 						if((limiteSuperior != null) && (intValidado <= limiteSuperior)){
 							intOk = true;	
 						}else if(limiteSuperior == null){
@@ -328,7 +330,7 @@ public class Validador {
 							System.out.println("EL VALOR DEBE SER MENOR O IGUAL A " + limiteSuperior);
 						}
 					}else if(limiteInferior == null){
-						
+
 						if((limiteSuperior != null) && (intValidado <= limiteSuperior)){
 							intOk = true;	
 						}else if(limiteSuperior == null){
@@ -338,65 +340,72 @@ public class Validador {
 							System.out.println("EL VALOR DEBE SER MENOR O IGUAL A " + limiteSuperior);
 						}
 					}else{
-						
+
 						intOk = false;
 						System.out.println("EL VALOR DEBE SER MAYOR O IGUAL A " + limiteInferior);
 					}
-					
+
 				}else{
-					
+
 					intOk = false;
 					s.nextLine();
 					System.out.println("DEBE SER MAYOR A CERO.");
 				}
 
 			}else{
-				
+
 				System.out.println("VALOR NO VALIDO.");
 				intOk = false;
 				s.nextLine();
 			}
 		}while(!intOk);
-		
+
 		return intValidado;
 	}
 
 	public static void insertHora(String mensaje, Calendar fechaLlegada) {
-		
+
 		int horaTmp = insertInt("Ingresar Hora (0-23): ", 0, 24, false);
 		int hora;
-		
+
 		if(horaTmp == 0 || horaTmp == 24){
 			hora = 0;
 			fechaLlegada.set(Calendar.AM_PM, Calendar.AM);
 		}else if(horaTmp >= 12){
-			
+
 			hora = (horaTmp + 12) - 24;
 			fechaLlegada.set(Calendar.AM_PM, Calendar.PM);
 		}else{
 			hora = horaTmp;
 			fechaLlegada.set(Calendar.AM_PM, Calendar.AM);
 		}
-		
+
 		fechaLlegada.set(Calendar.HOUR, hora);
-		
+
 
 		int minutos = insertInt("Ingresar minutos(0-59): ", 0, 59, false);
-		
+
 		fechaLlegada.set(Calendar.MINUTE, minutos);
 	}
-	
+
 	public static int calcularDiasEntreFechas(Calendar fechaPartida, Calendar fechaLlegada){
-		
+
 		Date fechaP = fechaPartida.getTime();
 		Date fechaL = fechaLlegada.getTime();		
-		
+
 		return (int)( (fechaL.getTime() - fechaP.getTime()) / (1000 * 60 * 60 * 24));
 	}
-	
+
 	public static int generarEnteroRandom(int min, int max){
-		
+
 		Random r = new Random();
 		return r.nextInt((max - min) + 1) + min;
+	}
+
+	public static String darFormatoFechaCalendar(Calendar fecha){
+
+		Date fechaDate = fecha.getTime();
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		return formatter.format(fechaDate);
 	}
 }
