@@ -57,7 +57,7 @@ public class ViajesLarga extends Viajes {
 		
 		if(distancia > distanciaMax){
 			
-			double kmExtras = distancia - distanciaMax;
+			//double kmExtras = distancia - distanciaMax;
 			
 			return (costo + (costo * (((int)((distancia - distanciaMax)/incrementoCadaKm))* incrementoSuperaKm)));
 		}

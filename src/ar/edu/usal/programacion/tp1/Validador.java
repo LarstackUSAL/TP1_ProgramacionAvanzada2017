@@ -24,7 +24,7 @@ public class Validador {
 
 	public static void insertarEnArray(Object[] arr, Object obj){
 
-		// Busco la primera posición vacía donde setear el nuevo vehiculo
+		// Busco la primera posicion vacia donde setear el nuevo vehiculo
 		for(int i=0; i<arr.length; i++) {
 
 			if(arr[i] == null) {
@@ -182,7 +182,7 @@ public class Validador {
 			}
 
 			if(!fechaOK && anioAceptado) 
-				System.out.println("AÑO INGRESADO NO VALIDO.");
+				System.out.println("A�O INGRESADO NO VALIDO.");
 			else if(!anioAceptado)
 				System.out.println(mensajeError);
 
@@ -203,7 +203,7 @@ public class Validador {
 		System.out.println(mensaje);
 		do {
 
-			System.out.println("Ingresar día: ");
+			System.out.println("Ingresar dia: ");
 
 			if(s.hasNextInt()) {
 
@@ -269,7 +269,7 @@ public class Validador {
 
 		do {
 
-			System.out.println("Ingresar año (AAAA): ");
+			System.out.println("Ingresar a�o (AAAA): ");
 
 			if(s.hasNextInt()) {
 
@@ -293,7 +293,7 @@ public class Validador {
 			}
 
 			if(!datosOK) 
-				System.out.println("AÑO INGRESADO INVALIDO.");
+				System.out.println("A�O INGRESADO INVALIDO.");
 
 		} while(!datosOK);
 
