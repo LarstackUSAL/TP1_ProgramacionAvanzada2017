@@ -14,11 +14,13 @@ public abstract class Viajes implements ICostoViaje{
 	protected Camiones vehiculo;
 	protected ArrayList<Peajes> peajes = new ArrayList();
 	
+	private static int nextIdViaje = 1;
+	
 	public Viajes() {}
 
 	public Viajes(int nroViaje, Calendar fechaPartida, double peso,
 			Peones[] peones, boolean requiereCustodiaSatelital, double costo,
-			Camiones vehiculo, ArrayList<Peajes> peajes) {
+			Camiones vehiculo) {
 		
 		this.nroViaje = nroViaje;
 		this.fechaPartida = fechaPartida;
@@ -27,7 +29,14 @@ public abstract class Viajes implements ICostoViaje{
 		this.requiereCustodiaSatelital = requiereCustodiaSatelital;
 		this.costo = costo;
 		this.vehiculo = vehiculo;
-		this.peajes = peajes;
+	}
+	
+	public static int getNextIdViaje() {
+
+		int idReturn = nextIdViaje;
+		nextIdViaje++;
+
+		return idReturn;
 	}
 	
 	public int getNroViaje() {
@@ -106,16 +115,21 @@ public abstract class Viajes implements ICostoViaje{
 		return peajes;
 	}
 
-	public void setPeajes(ArrayList<Peajes> peajes) {
-		this.peajes = peajes;
-	}
-
 	public boolean isRequiereCustodiaSatelital() {
 		return requiereCustodiaSatelital;
 	}
 
 	public void setRequiereCustodiaSatelital(boolean requiereCustodiaSatelital) {
 		this.requiereCustodiaSatelital = requiereCustodiaSatelital;
+	}
+
+	public abstract double calcularCostoTotal();
+
+	public void agregarPeaje() {
+		
+		peajes.add(new Peajes(Validador.insertString("Ingresar localidad: "), 
+				Validador.insertDouble("Ingresar importe peaje: ", true)));
+		
 	}
 
 }

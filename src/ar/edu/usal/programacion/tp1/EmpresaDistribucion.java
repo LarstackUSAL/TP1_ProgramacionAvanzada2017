@@ -8,7 +8,6 @@ public class EmpresaDistribucion {
 	public static final int MAX_PEONES = 5;
 	public static final int MAX_CAMIONES = 10;
 
-	private static int nextIdViaje = 1;
 	private static int cantidadViajesCortaDistancia = 0;
 
 	public static void main(String[] args) {
@@ -73,7 +72,7 @@ public class EmpresaDistribucion {
 					ced.mostrarViajePasaronPorLocalidad(viajesList);
 					break;
 				case 9:
-					ced.mostrarNumerosPatenteNoAsignado(camiones, args);
+					ced.mostrarNumerosPatenteNoAsignado(viajesList, camiones, args);
 					break;
 				case 10:
 					ced.mostrarViajesDeCadaPeon(peones, viajesList);
@@ -98,14 +97,6 @@ public class EmpresaDistribucion {
 		} while(!salirDelSistema);
 
 		s.close();
-	}
-
-	public static int getNextIdViaje() {
-
-		int idReturn = nextIdViaje;
-		nextIdViaje++;
-
-		return idReturn;
 	}
 
 	public static int getCantidadViajesCortaDistancia() {

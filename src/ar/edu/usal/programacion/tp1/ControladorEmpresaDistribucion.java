@@ -33,7 +33,7 @@ public class ControladorEmpresaDistribucion {
 				System.out.println();
 				System.out.println("INFORMACION CAMION: ");
 				String patente = Validador.insertString("Ingresar patente: ");
-				int anioPatentamiento = Validador.insertAnio("Ingresar año (AAAA): ","TIENE ANTIGUEDAD MAYOR A 3 AÑOS.", 3);
+				int anioPatentamiento = Validador.insertAnio("Ingresar aÃ±o (AAAA): ","TIENE ANTIGUEDAD MAYOR A 3 AÃ‘OS.", 3);
 				double capacidad = Validador.insertDouble("Ingresar capacidad: ", true);
 
 				Camiones camion = new Camiones(patente, anioPatentamiento, capacidad, true);
@@ -195,21 +195,6 @@ public class ControladorEmpresaDistribucion {
 					}while((!patenteOk || !disponibleOk || !capacidadOk) && reintentar);
 
 					if(reintentar){
-						boolean ingresarPeajes = Validador.insertBooleanSyN("Se quiere ingresar peajes? (s/n): ");
-						ArrayList<Peajes> peajesList = new ArrayList<Peajes>();
-
-						if(ingresarPeajes){
-
-							boolean otroPeaje;
-							do{
-								otroPeaje = false;
-								peajesList.add(new Peajes(Validador.insertString("Ingresar localidad: "), 
-										Validador.insertDouble("Ingresar importe peaje: ", true)));
-
-								otroPeaje = Validador.insertBooleanSyN("Agregar otro peaje? (s/n): ");
-
-							}while(otroPeaje);
-						}
 
 						Viajes viaje;
 
@@ -230,17 +215,32 @@ public class ControladorEmpresaDistribucion {
 
 							}while(otraLocalidad);
 
-							viaje = new ViajesLarga(EmpresaDistribucion.getNextIdViaje(), fechaPartida, peso, peonesViaje, 
-									custodiaSatelital, costo, camionViaje, peajesList, distancia, localidades);
+							viaje = new ViajesLarga(Viajes.getNextIdViaje(), fechaPartida, peso, peonesViaje, 
+									custodiaSatelital, costo, camionViaje, distancia, localidades);
 
 						}else{
 
 							boolean esEfectivo = Validador.insertBooleanSyN("Se abonara en efectivo? (s/n): ");
 
-							viaje = new ViajesCorta(EmpresaDistribucion.getNextIdViaje(), fechaPartida, peso, peonesViaje, 
-									custodiaSatelital, costo, camionViaje, peajesList, esEfectivo);
+							viaje = new ViajesCorta(Viajes.getNextIdViaje(), fechaPartida, peso, peonesViaje, 
+									custodiaSatelital, costo, camionViaje, esEfectivo);
 
 							EmpresaDistribucion.incrementarCantidadViajesCortaDistancia();
+						}
+						
+						boolean ingresarPeajes = Validador.insertBooleanSyN("Se quiere ingresar peajes? (s/n): ");
+						
+						if(ingresarPeajes){
+							
+							boolean otroPeaje;
+							do{
+								otroPeaje = false;
+								
+								viaje.agregarPeaje();
+
+								otroPeaje = Validador.insertBooleanSyN("Agregar otro peaje? (s/n): ");
+
+							}while(otroPeaje);
 						}
 
 						System.out.println("Costo Total: " + viaje.calcularCostoTotal());
@@ -714,7 +714,7 @@ public class ControladorEmpresaDistribucion {
 		if(!localidadEncontrada) System.out.println("NINGUN RESULTADO PARA EL FILTRO INGRESADO.");
 	}
 
-	public void mostrarNumerosPatenteNoAsignado(Camiones[] camiones, String[] args) {
+	public void mostrarNumerosPatenteNoAsignado(ArrayList<Viajes> viajesList, Camiones[] camiones, String[] args) {
 
 		if(args.length>0){
 
@@ -733,10 +733,24 @@ public class ControladorEmpresaDistribucion {
 					if(camion != null && camion.getPatente().trim().equals(numeroPatente.trim())){
 
 						existeCamion = true;
-						if(camion.isDisponible()){
+						boolean esAsignado = false;
+						
+						for (int k = 0; k < viajesList.size(); k++) {
+							
+							Viajes viaje = viajesList.get(k);
+							
+							if(viaje.getVehiculo().getPatente().trim().equals(numeroPatente.trim())){
+								
+								esAsignado = true;
+								break;
+							}
+						}						
+						
+						if(!esAsignado){
 							System.out.println("NUMERO PATENTE NO ASIGNADO: " + numeroPatente);
 							mostroCamion = true;
 						}
+
 						break;
 					}
 				}

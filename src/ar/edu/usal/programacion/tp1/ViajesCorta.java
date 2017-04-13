@@ -11,9 +11,9 @@ public class ViajesCorta extends Viajes {
 	
 	public ViajesCorta(int nroViaje, Calendar fechaPartida, double peso,
 			Peones[] peones, boolean requiereCustodiaSatelital, double costo,
-			Camiones vehiculo, ArrayList<Peajes> peajes, boolean esEfectivo) {
+			Camiones vehiculo, boolean esEfectivo) {
 		
-		super(nroViaje, fechaPartida, peso, peones, requiereCustodiaSatelital, costo, vehiculo, peajes);
+		super(nroViaje, fechaPartida, peso, peones, requiereCustodiaSatelital, costo, vehiculo);
 		this.setEsEfectivo(esEfectivo);
 	}
 

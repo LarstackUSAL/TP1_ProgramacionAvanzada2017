@@ -13,9 +13,9 @@ public class ViajesLarga extends Viajes {
 
 	public ViajesLarga(int nroViaje, Calendar fechaPartida, double peso,
 			Peones[] peones, boolean requiereCustodiaSatelital, double costo,
-			Camiones vehiculo, ArrayList<Peajes> peajes, double distancia, ArrayList localidades) {
+			Camiones vehiculo, double distancia, ArrayList localidades) {
 		
-		super(nroViaje, fechaPartida, peso, peones, requiereCustodiaSatelital, costo, vehiculo, peajes);
+		super(nroViaje, fechaPartida, peso, peones, requiereCustodiaSatelital, costo, vehiculo);
 		this.distancia = distancia;
 		this.localidades = localidades;
 	}
